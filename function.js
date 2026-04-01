@@ -108,7 +108,9 @@ function renderMenu() {
     if (activeFilter !== "All") items = items.filter(i => i.cat.toLowerCase() === activeFilter.toLowerCase());
     if (searchTerm) items = items.filter(i => i.name.toLowerCase().includes(searchTerm) || i.desc.toLowerCase().includes(searchTerm));
     if (activeSort === 'priceAsc') items.sort((a, b) => a.price - b.price);
-    if (activeSort === 'priceDesc') items.sort((a, b) => b.price - a.price);
+    else if (activeSort === 'priceDesc') items.sort((a, b) => b.price - a.price);
+    else if (activeSort === 'ratingDesc') items.sort((a, b) => b.rating - a.rating);
+    else if (activeSort === 'nameAsc') items.sort((a, b) => a.name.localeCompare(b.name));
 
     const menuGrid = document.getElementById('menuGrid');
     menuGrid.innerHTML = items.length ? items.map(item => `
@@ -134,7 +136,16 @@ function filterMenu(cat) { activeFilter = cat; renderCategories(); renderMenu();
 function handleSearch() { searchTerm = document.getElementById('searchInput').value.toLowerCase(); renderMenu(); }
 function sortMenu(type) {
     activeSort = type;
-    document.querySelector('#sortBtn span').innerText = type === 'priceAsc' ? 'Price: Low-High' : type === 'priceDesc' ? 'Price: High-Low' : 'Default';
+    const label = type === 'priceAsc'
+        ? 'Price: Low-High'
+        : type === 'priceDesc'
+            ? 'Price: High-Low'
+            : type === 'ratingDesc'
+                ? 'Rating: High-Low'
+                : type === 'nameAsc'
+                    ? 'Name: A-Z'
+                    : 'Default';
+    document.querySelector('#sortBtn span').innerText = label;
     renderMenu();
 }
 
